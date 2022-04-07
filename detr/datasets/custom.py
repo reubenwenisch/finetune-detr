@@ -33,7 +33,13 @@ class BuildingDetection(torchvision.datasets.CocoDetection):
 def convert_Building_poly_to_mask(segmentations, height, width):
     masks = []
     for polygons in segmentations:
-        rles = Building_mask.frPyObjects(polygons, height, width)
+        # print("polygons shape", polygons.shape())
+        try:
+            rles = Building_mask.frPyObjects(polygons, height, width)
+        except:
+            print("An exception occurred with polygons", polygons)
+            print("RLEs", Building_mask.frPyObjects(polygons, height, width))
+            # raise Exception("Sorry, please fix the polygon size") 
         mask = Building_mask.decode(rles)
         if len(mask.shape) < 3:
             mask = mask[..., None]

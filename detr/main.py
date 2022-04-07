@@ -82,7 +82,7 @@ def get_args_parser():
     parser.add_argument('--num_classes', default=None, type=int,
                         help='#classes in your dataset, which can override the value hard-coded in file models/detr.py')
     parser.add_argument('--dataset_file', default='coco')
-    # parser.add_argument('--coco_path', type=str)
+    parser.add_argument('--coco_path', type=str)
     parser.add_argument('--data_path', type=str)
     parser.add_argument('--coco_panoptic_path', type=str)
     parser.add_argument('--remove_difficult', action='store_true')
