@@ -203,8 +203,7 @@ The Logs are as follows
 Hungarian Loss is computed between ground truth boxes and the outputs of the model.
 ![](output.png)
 ![](output2.png)
-
-# Evaluation matrix
 ![](output3.png)
-
-
+# Evaluation matrix
+![](output4.png)
+![](output5.png)
