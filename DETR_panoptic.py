@@ -101,18 +101,57 @@ plt.imshow(panoptic_seg)
 plt.axis('off')
 plt.show()
 
+import numpy as np
+from panopticapi.utils import IdGenerator
+import json
+import os
+
+panoptic_coco_categories = './panoptic_coco_categories.json'
+with open(panoptic_coco_categories, 'r') as f:
+    categories_list = json.load(f)
+categories = {category['id']: category for category in categories_list}
+
+id_generator = IdGenerator(categories)
+
+def get_image(panoptic_seg, file_name):
+    pan_format = np.zeros(panoptic_seg.shape, dtype=np.uint8)
+    # for ann in result['segments_info']:
+    l = np.unique(panoptic_seg)
+    for el in l:
+        if el < 1000:
+            semantic_id = el
+            is_crowd = 1
+        else:
+            semantic_id = el // 1000
+            is_crowd = 0
+        if semantic_id not in categories:
+            continue
+        if categories[semantic_id]['isthing'] == 0:
+            is_crowd = 0
+        mask = panoptic_seg == el
+        # mask = panoptic_seg == segment_id
+        segment_id, color = id_generator.get_id_and_color(semantic_id)
+        # cim1 = cim.copy()
+        pan_format[np.where((mask==True).all(axis=2))]=color
+        # pan_format[mask] = color
+    # pan_format[panoptic_seg == 1] = color
+    Image.fromarray(pan_format).save('./panoptic/' + file_name)
+
+
 def save_image_panoptic(result, file_name):
   # The segmentation is stored in a special-format png
   panoptic_seg = Image.open(io.BytesIO(result['png_string']))
   panoptic_seg = numpy.array(panoptic_seg, dtype=numpy.uint8).copy()
   # We retrieve the ids corresponding to each mask
-  panoptic_seg_id = rgb2id(panoptic_seg)
+#   panoptic_seg_id = rgb2id(panoptic_seg)
   # Finally we color each mask individually
-  panoptic_seg[:, :, :] = 0
+#   panoptic_seg[:, :, :] = 0
   # for id in range(panoptic_seg_id.max() + 1):
   #   panoptic_seg[panoptic_seg_id == id] = numpy.asarray(next(palette)) * 255
-  im = Image.fromarray(panoptic_seg)
-  im.save(f'./panoptic/panoptic_{mode}2017/' + file_name)
+  # im = Image.fromarray(panoptic_seg)
+  get_image(panoptic_seg, file_name)
+#   im.save('./panoptic/' + file_name)
+#   return panoptic_seg_id
 
 result = postprocessor(out, torch.as_tensor(img.shape[-2:]).unsqueeze(0))[0]
 # result["segments_info"]
