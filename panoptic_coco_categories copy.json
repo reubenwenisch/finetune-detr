@@ -1,5 +1,38 @@
 [
     {
+        "id": 1,
+        "name": "rebar",
+        "supercategory": "rebar",
+        "color": [
+            220,
+            20,
+            60
+        ],
+        "isthing": 1
+      },
+      {
+        "id": 2,
+        "name": "spall",
+        "supercategory": "spall",
+        "color": [
+            119,
+            11,
+            32
+        ],
+        "isthing": 1
+      },
+      {
+        "id": 3,
+        "name": "crack",
+        "supercategory": "crack",
+        "color": [
+            0,
+            0,
+            142
+        ],
+        "isthing": 1
+    },
+    {
         "supercategory": "textile",
         "color": [
             255,
