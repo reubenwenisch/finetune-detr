@@ -135,7 +135,7 @@ def get_image(panoptic_seg, file_name):
         pan_format[np.where((mask==True).all(axis=2))]=color
         # pan_format[mask] = color
     # pan_format[panoptic_seg == 1] = color
-    Image.fromarray(pan_format).save('./panoptic/' + file_name)
+    Image.fromarray(pan_format).save('./panoptic/' + f'panoptic_{mode}2017/' + file_name)
 
 
 def save_image_panoptic(result, file_name):
@@ -159,8 +159,8 @@ result = postprocessor(out, torch.as_tensor(img.shape[-2:]).unsqueeze(0))[0]
 from torch.utils.data import DataLoader
 import torchvision.datasets as dset
 from torchvision.transforms import ToTensor
-# path2data = "/home/reuben/Atom360/Learning/data/dataset/images"
-path2data = "/home/wenisch/Atom360/AI/Learning/data/dataset/images"
+path2data = "/home/reuben/Atom360/Learning/data/dataset/images"
+# path2data = "/home/wenisch/Atom360/AI/Learning/data/dataset/images"
 path2json_train = "./annotations/train.json"
 path2json_test = "./annotations/test.json"
 coco_train_dset = dset.CocoDetection(root = path2data, annFile = path2json_train, transform = ToTensor())
