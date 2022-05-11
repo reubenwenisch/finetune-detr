@@ -15,7 +15,7 @@ import panopticapi
 from panopticapi.utils import id2rgb, rgb2id
 # device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 device = 'cpu'
-mode = 'val'
+mode = 'train'
 
 # These are the COCO classes
 CLASSES = [
@@ -113,45 +113,28 @@ categories = {category['id']: category for category in categories_list}
 
 id_generator = IdGenerator(categories)
 
-def get_image(panoptic_seg, file_name):
-    pan_format = np.zeros(panoptic_seg.shape, dtype=np.uint8)
-    # for ann in result['segments_info']:
-    l = np.unique(panoptic_seg)
-    for el in l:
-        if el < 1000:
-            semantic_id = el
-            is_crowd = 1
-        else:
-            semantic_id = el // 1000
-            is_crowd = 0
+def get_image(panoptic_seg1, file_name, result):
+    panoptic_seg_id = rgb2id(panoptic_seg1)
+    # l = np.unique(panoptic_seg_id)
+    panoptic_seg1[:, :, :] = 0
+    for segment_info in result['segments_info']:
+        semantic_id = segment_info['category_id']
         if semantic_id not in categories:
+            # print(f"{segment_info['category_id']}not in category")
             continue
-        if categories[semantic_id]['isthing'] == 0:
-            is_crowd = 0
-        mask = panoptic_seg == el
-        # mask = panoptic_seg == segment_id
-        segment_id, color = id_generator.get_id_and_color(semantic_id)
-        # cim1 = cim.copy()
-        pan_format[np.where((mask==True).all(axis=2))]=color
-        # pan_format[mask] = color
-    # pan_format[panoptic_seg == 1] = color
-    Image.fromarray(pan_format).save('./panoptic/' + f'panoptic_{mode}2017/' + file_name)
-
+        color = id_generator.get_color(segment_info['category_id'])
+        mask = panoptic_seg_id == segment_info['id']
+        panoptic_seg1[mask] = color
+        print(f"color is {color} for id {semantic_id}")
+    img1 = Image.fromarray(panoptic_seg1)
+    img1.save('./panoptic/' + f'panoptic_{mode}2017/' + file_name)
+    # return segment_id
 
 def save_image_panoptic(result, file_name):
-  # The segmentation is stored in a special-format png
   panoptic_seg = Image.open(io.BytesIO(result['png_string']))
   panoptic_seg = numpy.array(panoptic_seg, dtype=numpy.uint8).copy()
-  # We retrieve the ids corresponding to each mask
-#   panoptic_seg_id = rgb2id(panoptic_seg)
-  # Finally we color each mask individually
-#   panoptic_seg[:, :, :] = 0
-  # for id in range(panoptic_seg_id.max() + 1):
-  #   panoptic_seg[panoptic_seg_id == id] = numpy.asarray(next(palette)) * 255
-  # im = Image.fromarray(panoptic_seg)
-  get_image(panoptic_seg, file_name)
-#   im.save('./panoptic/' + file_name)
-#   return panoptic_seg_id
+  get_image(panoptic_seg, file_name, result)
+
 
 result = postprocessor(out, torch.as_tensor(img.shape[-2:]).unsqueeze(0))[0]
 # result["segments_info"]
@@ -159,8 +142,8 @@ result = postprocessor(out, torch.as_tensor(img.shape[-2:]).unsqueeze(0))[0]
 from torch.utils.data import DataLoader
 import torchvision.datasets as dset
 from torchvision.transforms import ToTensor
-path2data = "/home/reuben/Atom360/Learning/data/dataset/images"
-# path2data = "/home/wenisch/Atom360/AI/Learning/data/dataset/images"
+# path2data = "/home/reuben/Atom360/Learning/data/dataset/images"
+path2data = "/home/wenisch/Atom360/AI/Learning/data/dataset/images"
 path2json_train = "./annotations/train.json"
 path2json_test = "./annotations/test.json"
 coco_train_dset = dset.CocoDetection(root = path2data, annFile = path2json_train, transform = ToTensor())
