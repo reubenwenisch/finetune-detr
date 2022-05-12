@@ -542,24 +542,36 @@ def get_color(cat_id):
                                              size=3)
         return tuple(np.maximum(0, np.minimum(255, new_color)))
 
+panoptic_coco_categories = './panoptic_coco_categories.json'
+with open(panoptic_coco_categories, 'r') as f:
+    categories_list = json.load(f)
+categories = {category['id']: category for category in categories_list}
+
+id_generator = IdGenerator(categories)
+
 def create_seg_info(result):
-    global seg_id
+    # global seg_id
+    segments_info_list = []
     # id_generator = IdGenerator(category_list)
-    for i, info in enumerate(result["segments_info"]):
-        # segment_id, color = id_generator.get_id_and_color(result["segments_info"][i]['category_id'])
+    for i, segment_info in enumerate(result["segments_info"]):
+        semantic_id = segment_info['category_id']
+        if semantic_id not in categories:
+            # print(f"{segment_info['category_id']}not in category")
+            continue
+        segment_id, color = id_generator.get_id_and_color(segment_info['category_id'])
         # cat_id = result["segments_info"][i]['category_id']
         # color = get_color(cat_id)
         # segment_id = rgb2id(color)
-        result["segments_info"][i]["id"] = seg_id #segment_id
-        seg_id +=1
-        result["segments_info"][i]["iscrowd"] = int(0)
-        labels = info["category_id"]
+        segment_info["id"] = segment_id # seg_id #
+        # seg_id +=1
+        segment_info["iscrowd"] = int(0)
+        labels = segment_info["category_id"]
         # for label in labels: # Rmove non class annotations
-        if int(labels) not in custom_ids:
-            result["segments_info"].remove(result["segments_info"][i])
-            # result["segments_info"][i] = [] #result["segments_info"][result["segments_info"]!=result["segments_info"][i]]
-        #     print("Removed label", result["segments_info"])
-    return result["segments_info"]
+        # if int(labels) not in custom_ids:
+        #     continue
+        #     result["segments_info"].remove(segment_info)
+        segments_info_list.append(segment_info)
+    return segments_info_list
 
 annotation_id_panoptic = 0
 

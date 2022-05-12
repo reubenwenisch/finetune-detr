@@ -142,8 +142,8 @@ result = postprocessor(out, torch.as_tensor(img.shape[-2:]).unsqueeze(0))[0]
 from torch.utils.data import DataLoader
 import torchvision.datasets as dset
 from torchvision.transforms import ToTensor
-# path2data = "/home/reuben/Atom360/Learning/data/dataset/images"
-path2data = "/home/wenisch/Atom360/AI/Learning/data/dataset/images"
+path2data = "/home/reuben/Atom360/Learning/data/dataset/images"
+# path2data = "/home/wenisch/Atom360/AI/Learning/data/dataset/images"
 path2json_train = "./annotations/train.json"
 path2json_test = "./annotations/test.json"
 coco_train_dset = dset.CocoDetection(root = path2data, annFile = path2json_train, transform = ToTensor())
