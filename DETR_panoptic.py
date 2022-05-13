@@ -112,8 +112,8 @@ with open(panoptic_coco_categories, 'r') as f:
 categories = {category['id']: category for category in categories_list}
 
 id_generator = IdGenerator(categories)
-
-def get_image(panoptic_seg1, file_name, result):
+from PIL import ImageOps
+def get_image(panoptic_seg1, file_name, result, img_detection):
     panoptic_seg_id = rgb2id(panoptic_seg1)
     # l = np.unique(panoptic_seg_id)
     panoptic_seg1[:, :, :] = 0
@@ -127,13 +127,20 @@ def get_image(panoptic_seg1, file_name, result):
         panoptic_seg1[mask] = color
         print(f"color is {color} for id {semantic_id}")
     img1 = Image.fromarray(panoptic_seg1)
-    img1.save('./panoptic/' + f'panoptic_{mode}2017/' + file_name)
+    img2 = img_detection
+    thresh = 20
+    fn = lambda x : 255 if x > thresh else 0
+    mask = img_detection.convert('L').point(fn, mode='1')
+    # mask = img_detection.copy().convert('L')
+    mask_invert = ImageOps.invert(mask.convert('RGB'))
+    img = Image.composite(img1, img2, mask_invert.convert('L'))
+    img.save('./panoptic/' + f'panoptic_{mode}2017/' + file_name)
     # return segment_id
 
-def save_image_panoptic(result, file_name):
+def save_image_panoptic(result, file_name, img_detection):
   panoptic_seg = Image.open(io.BytesIO(result['png_string']))
   panoptic_seg = numpy.array(panoptic_seg, dtype=numpy.uint8).copy()
-  get_image(panoptic_seg, file_name, result)
+  get_image(panoptic_seg, file_name, result, img_detection)
 
 
 result = postprocessor(out, torch.as_tensor(img.shape[-2:]).unsqueeze(0))[0]
@@ -162,8 +169,10 @@ n_images = 0
 
 if mode =='train':
     loader = train_dataloader
+    coco_detection = coco_train
 else:
     loader = test_dataloader
+    coco_detection = coco_test
 
 def images_annotations_info(loader):
     global n_images
@@ -186,10 +195,11 @@ def images_annotations_info(loader):
             file_name = coco_test.loadImgs(ids=int(image_id))[0]['file_name']
             width = coco_test.loadImgs(ids=int(image_id))[0]['width']
             height = coco_test.loadImgs(ids=int(image_id))[0]['height']
-        save_image_panoptic(result, file_name)
         image = create_image_panpotic_annotation(file_name, width, height, image_id)
         images.append(image)
-        annotations.append(create_panoptic_annotation_format(image_id, file_name, result))
+        annotation, img_detection = create_panoptic_annotation_format(image_id, file_name, result, coco_detection)
+        annotations.append(annotation)
+        save_image_panoptic(result, file_name, img_detection)
         n_images += 1
     return images, annotations
 
