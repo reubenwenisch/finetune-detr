@@ -588,8 +588,9 @@ def create_panoptic_annotation_format(image_id, file_name, result):
     """
     segments_info = create_seg_info(result)
     annotation = {
-        "segments_info": segments_info,
         "file_name": file_name,
         "image_id": image_id,
     }
+    if segments_info != []:
+        annotation["segments_info"] = segments_info
     return annotation
