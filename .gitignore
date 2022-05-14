@@ -16,3 +16,4 @@ not_tracked_dir/
 .vscode
 panoptic/
 old/
+docs/build

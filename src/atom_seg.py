@@ -4,6 +4,8 @@ from pycocotools import mask
 from skimage import measure
 import os
 import cv2
+from PIL import Image
+from panopticapi.utils import IdGenerator
 
 annotation_id = 0
 black = [0,0,0]
@@ -346,6 +348,18 @@ category_list = [
             "name": "rug-merged"
         }]
 
+panoptic_coco_categories = './panoptic_coco_categories.json'
+with open(panoptic_coco_categories, 'r') as f:
+    categories_list = json.load(f)
+categories = {category['id']: category for category in categories_list}
+
+panoptic_coco_categories = './panoptic_coco_categories_pan.json'
+with open(panoptic_coco_categories, 'r') as f:
+    categories_list_pan = json.load(f)
+categories_pan = {category['id']: category for category in categories_list_pan}
+
+id_generator = IdGenerator(categories)
+
 def create_annotation_format(masks, category_id, image_id):
     global annotation_id
     annotation = {
@@ -408,11 +422,6 @@ def create_annotation_info(image_id, category_id, binary_mask,
 
     if bounding_box is None:
         bounding_box = mask.toBbox(binary_mask_encoded)
-
-    # if category_info["is_crowd"]:
-    #     is_crowd = 1
-    #     segmentation = binary_mask_to_rle(binary_mask)
-    # else :
     is_crowd = 0
     segmentation = binary_mask_to_polygon(binary_mask, tolerance)
     if not segmentation:
@@ -459,19 +468,8 @@ def mask_to_mscoco(alpha, annotations, img_id, mode='rle'):
         return annotations 
 
 def create_category_annotation(category_dict):
-    # category_list = []
-    global category_list
-    # category_list = category
-
-    # for key, value in category_dict.items():
-    #     category = {
-    #         "supercategory": key,
-    #         "id": int(value),
-    #         "name": key
-    #     }
-    #     category_list.append(category)
-
-    return category_list
+    # global category_list
+    return categories_pan
 
 def create_image_annotation(file_name, width, height, image_id):
     images = {
@@ -524,17 +522,6 @@ def rgb2id(color):
 
 seg_id = 0
 
-from panopticapi.utils import IdGenerator
-custom_ids = [1, 2, 3, 92, 93, 95, 100, 107, 109, 112, 118, 119, 122, 125, 128, 130, 133, 138, 141, 144, 145, 147, 148, 149, 151, 154, 155, 156, 159, 161, 166, 168, 171, 175, 176, 177, 178, 180, 181, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200]
-
-# # print("labels",labels)
-#             for i, label in enumerate(labels):
-#                 if int(label) not in custom_ids:
-#                     labels = labels[labels!=label]
-#                     remove_id = [labels!=label]
-#                     # labels.pop(int(label))
-#             print("##############remove_id",remove_id)
-
 def get_color(cat_id):
     def random_color(base, max_dist=30):
         new_color = base + np.random.randint(low=-max_dist,
@@ -543,27 +530,21 @@ def get_color(cat_id):
         return tuple(np.maximum(0, np.minimum(255, new_color)))
 
 def create_seg_info(result):
-    global seg_id
-    # id_generator = IdGenerator(category_list)
-    for i, info in enumerate(result["segments_info"]):
-        # segment_id, color = id_generator.get_id_and_color(result["segments_info"][i]['category_id'])
-        # cat_id = result["segments_info"][i]['category_id']
-        # color = get_color(cat_id)
-        # segment_id = rgb2id(color)
-        result["segments_info"][i]["id"] = seg_id #segment_id
-        seg_id +=1
-        result["segments_info"][i]["iscrowd"] = int(0)
-        labels = info["category_id"]
-        # for label in labels: # Rmove non class annotations
-        if int(labels) not in custom_ids:
-            result["segments_info"].remove(result["segments_info"][i])
-            # result["segments_info"][i] = [] #result["segments_info"][result["segments_info"]!=result["segments_info"][i]]
-        #     print("Removed label", result["segments_info"])
-    return result["segments_info"]
+    segments_info_list = []
+    for i, segment_info in enumerate(result["segments_info"]):
+        semantic_id = segment_info['category_id']
+        if semantic_id not in categories:
+            continue
+        segment_id, color = id_generator.get_id_and_color(segment_info['category_id'])
+        segment_info["id"] = segment_id # seg_id #
+        segment_info["iscrowd"] = int(0)
+        labels = segment_info["category_id"]
+        segments_info_list.append(segment_info)
+    return segments_info_list
 
 annotation_id_panoptic = 0
 
-def create_panoptic_annotation_format(image_id, file_name, result):
+def create_panoptic_annotation_format(image_id, file_name, result, coco_detection):
     """Create Panoptic format dictionary
 
     Args:
@@ -576,8 +557,45 @@ def create_panoptic_annotation_format(image_id, file_name, result):
     """
     segments_info = create_seg_info(result)
     annotation = {
-        "segments_info": segments_info,
         "file_name": file_name,
         "image_id": image_id,
     }
-    return annotation
+    # if segments_info != []:
+    annotation["segments_info"] = segments_info
+    segments_info_det, img_detection = convert_detection_to_panoptic_coco_format_single_core(coco_detection, image_id)
+    annotation["segments_info"].append(segments_info_det)
+    return annotation, img_detection
+
+# coco_detection = COCO(input_json_file)
+
+def convert_detection_to_panoptic_coco_format_single_core(coco_detection, img_id):
+    id_generator = IdGenerator(categories_pan)
+    img = coco_detection.loadImgs(int(img_id))[0]
+    pan_format = np.zeros((img['height'], img['width'], 3), dtype=np.uint8)
+    overlaps_map = np.zeros((img['height'], img['width']), dtype=np.uint32)
+    anns_ids = coco_detection.getAnnIds(img_id)
+    anns = coco_detection.loadAnns(anns_ids)
+    # panoptic_record = {}
+    # panoptic_record['image_id'] = img_id
+    file_name = '{}.png'.format(img['file_name'].rsplit('.')[0])
+    # panoptic_record['file_name'] = file_name
+    segments_info = []
+    for ann in anns:
+        if ann['category_id'] not in categories_pan:
+            raise Exception('Panoptic coco categories file does not contain \
+                category with id: {}'.format(ann['category_id'])
+            )
+        segment_id, color = id_generator.get_id_and_color(ann['category_id'])
+        mask = coco_detection.annToMask(ann)
+        overlaps_map += mask
+        pan_format[mask == 1] = color
+        ann.pop('segmentation')
+        ann.pop('image_id')
+        ann['id'] = segment_id
+        segments_info.append(ann)
+    if np.sum(overlaps_map > 1) != 0:
+        raise Exception("Segments for image {} overlap each other.".format(img_id))
+    # panoptic_record['segments_info'] = segments_info
+    # annotations_panoptic.append(panoptic_record)
+    img_detection = Image.fromarray(pan_format)
+    return segments_info, img_detection

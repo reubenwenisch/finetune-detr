@@ -35,7 +35,7 @@ class CocoPanoptic:
         ann_info = self.coco['annotations'][idx] if "annotations" in self.coco else self.coco['images'][idx]
         img_path = Path(self.img_folder) / ann_info['file_name'].replace('.png', '.jpg')
         ann_path = Path(self.ann_folder) / ann_info['file_name']
-
+        # print("idx", idx)
         img = Image.open(img_path).convert('RGB')
         w, h = img.size
         if "segments_info" in ann_info:

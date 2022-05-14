@@ -1,0 +1,618 @@
+[
+    {
+        "id": 1,
+        "name": "rebar",
+        "supercategory": "rebar",
+        "color": [
+            220,
+            20,
+            60
+        ],
+        "isthing": 1
+      },
+      {
+        "id": 2,
+        "name": "spall",
+        "supercategory": "spall",
+        "color": [
+            119,
+            11,
+            32
+        ],
+        "isthing": 1
+      },
+      {
+        "id": 3,
+        "name": "crack",
+        "supercategory": "crack",
+        "color": [
+            0,
+            0,
+            142
+        ],
+        "isthing": 1
+    },
+    {
+        "supercategory": "textile",
+        "color": [
+            255,
+            255,
+            128
+        ],
+        "isthing": 0,
+        "id": 92,
+        "name": "banner"
+    },
+    {
+        "supercategory": "textile",
+        "color": [
+            147,
+            211,
+            203
+        ],
+        "isthing": 0,
+        "id": 93,
+        "name": "blanket"
+    },
+    {
+        "supercategory": "building",
+        "color": [
+            150,
+            100,
+            100
+        ],
+        "isthing": 0,
+        "id": 95,
+        "name": "bridge"
+    },
+    {
+        "supercategory": "raw-material",
+        "color": [
+            168,
+            171,
+            172
+        ],
+        "isthing": 0,
+        "id": 100,
+        "name": "cardboard"
+    },
+    {
+        "supercategory": "furniture-stuff",
+        "color": [
+            146,
+            112,
+            198
+        ],
+        "isthing": 0,
+        "id": 107,
+        "name": "counter"
+    },
+    {
+        "supercategory": "textile",
+        "color": [
+            210,
+            170,
+            100
+        ],
+        "isthing": 0,
+        "id": 109,
+        "name": "curtain"
+    },
+    {
+        "supercategory": "furniture-stuff",
+        "color": [
+            92,
+            136,
+            89
+        ],
+        "isthing": 0,
+        "id": 112,
+        "name": "door-stuff"
+    },
+    {
+        "supercategory": "floor",
+        "color": [
+            218,
+            88,
+            184
+        ],
+        "isthing": 0,
+        "id": 118,
+        "name": "floor-wood"
+    },
+    {
+        "supercategory": "plant",
+        "color": [
+            241,
+            129,
+            0
+        ],
+        "isthing": 0,
+        "id": 119,
+        "name": "flower"
+    },
+    {
+        "supercategory": "food-stuff",
+        "color": [
+            217,
+            17,
+            255
+        ],
+        "isthing": 0,
+        "id": 122,
+        "name": "fruit"
+    },
+    {
+        "supercategory": "ground",
+        "color": [
+            124,
+            74,
+            181
+        ],
+        "isthing": 0,
+        "id": 125,
+        "name": "gravel"
+    },
+    {
+        "supercategory": "building",
+        "color": [
+            70,
+            70,
+            70
+        ],
+        "isthing": 0,
+        "id": 128,
+        "name": "house"
+    },
+    {
+        "supercategory": "furniture-stuff",
+        "color": [
+            255,
+            228,
+            255
+        ],
+        "isthing": 0,
+        "id": 130,
+        "name": "light"
+    },
+    {
+        "supercategory": "furniture-stuff",
+        "color": [
+            154,
+            208,
+            0
+        ],
+        "isthing": 0,
+        "id": 133,
+        "name": "mirror-stuff"
+    },
+    {
+        "supercategory": "structural",
+        "color": [
+            193,
+            0,
+            92
+        ],
+        "isthing": 0,
+        "id": 138,
+        "name": "net"
+    },
+    {
+        "supercategory": "textile",
+        "color": [
+            76,
+            91,
+            113
+        ],
+        "isthing": 0,
+        "id": 141,
+        "name": "pillow"
+    },
+    {
+        "supercategory": "ground",
+        "color": [
+            255,
+            180,
+            195
+        ],
+        "isthing": 0,
+        "id": 144,
+        "name": "platform"
+    },
+    {
+        "supercategory": "ground",
+        "color": [
+            106,
+            154,
+            176
+        ],
+        "isthing": 0,
+        "id": 145,
+        "name": "playingfield"
+    },
+    {
+        "supercategory": "ground",
+        "color": [
+            230,
+            150,
+            140
+        ],
+        "isthing": 0,
+        "id": 147,
+        "name": "railroad"
+    },
+    {
+        "supercategory": "water",
+        "color": [
+            60,
+            143,
+            255
+        ],
+        "isthing": 0,
+        "id": 148,
+        "name": "river"
+    },
+    {
+        "supercategory": "ground",
+        "color": [
+            128,
+            64,
+            128
+        ],
+        "isthing": 0,
+        "id": 149,
+        "name": "road"
+    },
+    {
+        "supercategory": "building",
+        "color": [
+            92,
+            82,
+            55
+        ],
+        "isthing": 0,
+        "id": 151,
+        "name": "roof"
+    },
+    {
+        "supercategory": "ground",
+        "color": [
+            254,
+            212,
+            124
+        ],
+        "isthing": 0,
+        "id": 154,
+        "name": "sand"
+    },
+    {
+        "supercategory": "water",
+        "color": [
+            73,
+            77,
+            174
+        ],
+        "isthing": 0,
+        "id": 155,
+        "name": "sea"
+    },
+    {
+        "supercategory": "furniture-stuff",
+        "color": [
+            255,
+            160,
+            98
+        ],
+        "isthing": 0,
+        "id": 156,
+        "name": "shelf"
+    },
+    {
+        "supercategory": "ground",
+        "color": [
+            255,
+            255,
+            255
+        ],
+        "isthing": 0,
+        "id": 159,
+        "name": "snow"
+    },
+    {
+        "supercategory": "furniture-stuff",
+        "color": [
+            104,
+            84,
+            109
+        ],
+        "isthing": 0,
+        "id": 161,
+        "name": "stairs"
+    },
+    {
+        "supercategory": "building",
+        "color": [
+            169,
+            164,
+            131
+        ],
+        "isthing": 0,
+        "id": 166,
+        "name": "tent"
+    },
+    {
+        "supercategory": "textile",
+        "color": [
+            225,
+            199,
+            255
+        ],
+        "isthing": 0,
+        "id": 168,
+        "name": "towel"
+    },
+    {
+        "supercategory": "wall",
+        "color": [
+            137,
+            54,
+            74
+        ],
+        "isthing": 0,
+        "id": 171,
+        "name": "wall-brick"
+    },
+    {
+        "supercategory": "wall",
+        "color": [
+            135,
+            158,
+            223
+        ],
+        "isthing": 0,
+        "id": 175,
+        "name": "wall-stone"
+    },
+    {
+        "supercategory": "wall",
+        "color": [
+            7,
+            246,
+            231
+        ],
+        "isthing": 0,
+        "id": 176,
+        "name": "wall-tile"
+    },
+    {
+        "supercategory": "wall",
+        "color": [
+            107,
+            255,
+            200
+        ],
+        "isthing": 0,
+        "id": 177,
+        "name": "wall-wood"
+    },
+    {
+        "supercategory": "water",
+        "color": [
+            58,
+            41,
+            149
+        ],
+        "isthing": 0,
+        "id": 178,
+        "name": "water-other"
+    },
+    {
+        "supercategory": "window",
+        "color": [
+            183,
+            121,
+            142
+        ],
+        "isthing": 0,
+        "id": 180,
+        "name": "window-blind"
+    },
+    {
+        "supercategory": "window",
+        "color": [
+            255,
+            73,
+            97
+        ],
+        "isthing": 0,
+        "id": 181,
+        "name": "window-other"
+    },
+    {
+        "supercategory": "plant",
+        "color": [
+            107,
+            142,
+            35
+        ],
+        "isthing": 0,
+        "id": 184,
+        "name": "tree-merged"
+    },
+    {
+        "supercategory": "structural",
+        "color": [
+            190,
+            153,
+            153
+        ],
+        "isthing": 0,
+        "id": 185,
+        "name": "fence-merged"
+    },
+    {
+        "supercategory": "ceiling",
+        "color": [
+            146,
+            139,
+            141
+        ],
+        "isthing": 0,
+        "id": 186,
+        "name": "ceiling-merged"
+    },
+    {
+        "supercategory": "sky",
+        "color": [
+            70,
+            130,
+            180
+        ],
+        "isthing": 0,
+        "id": 187,
+        "name": "sky-other-merged"
+    },
+    {
+        "supercategory": "furniture-stuff",
+        "color": [
+            134,
+            199,
+            156
+        ],
+        "isthing": 0,
+        "id": 188,
+        "name": "cabinet-merged"
+    },
+    {
+        "supercategory": "furniture-stuff",
+        "color": [
+            209,
+            226,
+            140
+        ],
+        "isthing": 0,
+        "id": 189,
+        "name": "table-merged"
+    },
+    {
+        "supercategory": "floor",
+        "color": [
+            96,
+            36,
+            108
+        ],
+        "isthing": 0,
+        "id": 190,
+        "name": "floor-other-merged"
+    },
+    {
+        "supercategory": "ground",
+        "color": [
+            96,
+            96,
+            96
+        ],
+        "isthing": 0,
+        "id": 191,
+        "name": "pavement-merged"
+    },
+    {
+        "supercategory": "solid",
+        "color": [
+            64,
+            170,
+            64
+        ],
+        "isthing": 0,
+        "id": 192,
+        "name": "mountain-merged"
+    },
+    {
+        "supercategory": "plant",
+        "color": [
+            152,
+            251,
+            152
+        ],
+        "isthing": 0,
+        "id": 193,
+        "name": "grass-merged"
+    },
+    {
+        "supercategory": "ground",
+        "color": [
+            208,
+            229,
+            228
+        ],
+        "isthing": 0,
+        "id": 194,
+        "name": "dirt-merged"
+    },
+    {
+        "supercategory": "raw-material",
+        "color": [
+            206,
+            186,
+            171
+        ],
+        "isthing": 0,
+        "id": 195,
+        "name": "paper-merged"
+    },
+    {
+        "supercategory": "food-stuff",
+        "color": [
+            152,
+            161,
+            64
+        ],
+        "isthing": 0,
+        "id": 196,
+        "name": "food-other-merged"
+    },
+    {
+        "supercategory": "building",
+        "color": [
+            116,
+            112,
+            0
+        ],
+        "isthing": 0,
+        "id": 197,
+        "name": "building-other-merged"
+    },
+    {
+        "supercategory": "solid",
+        "color": [
+            0,
+            114,
+            143
+        ],
+        "isthing": 0,
+        "id": 198,
+        "name": "rock-merged"
+    },
+    {
+        "supercategory": "wall",
+        "color": [
+            102,
+            102,
+            156
+        ],
+        "isthing": 0,
+        "id": 199,
+        "name": "wall-other-merged"
+    },
+    {
+        "supercategory": "textile",
+        "color": [
+            250,
+            141,
+            255
+        ],
+        "isthing": 0,
+        "id": 200,
+        "name": "rug-merged"
+    }
+]
