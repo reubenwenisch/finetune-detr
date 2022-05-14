@@ -468,8 +468,9 @@ def mask_to_mscoco(alpha, annotations, img_id, mode='rle'):
         return annotations 
 
 def create_category_annotation(category_dict):
-    # global category_list
-    return categories_pan
+    global category_list
+    # return categories_pan
+    return category_list
 
 def create_image_annotation(file_name, width, height, image_id):
     images = {
@@ -531,9 +532,11 @@ def get_color(cat_id):
 
 def create_seg_info(result):
     segments_info_list = []
-    for i, segment_info in enumerate(result["segments_info"]):
+    # result_local = result.copy()
+    for i, segment_info in enumerate(result): #["segments_info"]):
         semantic_id = segment_info['category_id']
         if semantic_id not in categories:
+            print("semnantic id missing", semantic_id)
             continue
         segment_id, color = id_generator.get_id_and_color(segment_info['category_id'])
         segment_info["id"] = segment_id # seg_id #
@@ -568,6 +571,7 @@ def create_panoptic_annotation_format(image_id, file_name, result, coco_detectio
 
 # coco_detection = COCO(input_json_file)
 
+
 def convert_detection_to_panoptic_coco_format_single_core(coco_detection, img_id):
     id_generator = IdGenerator(categories_pan)
     img = coco_detection.loadImgs(int(img_id))[0]
@@ -579,23 +583,23 @@ def convert_detection_to_panoptic_coco_format_single_core(coco_detection, img_id
     # panoptic_record['image_id'] = img_id
     file_name = '{}.png'.format(img['file_name'].rsplit('.')[0])
     # panoptic_record['file_name'] = file_name
-    segments_info = []
+    segments_info_det = []
     for ann in anns:
         if ann['category_id'] not in categories_pan:
             raise Exception('Panoptic coco categories file does not contain \
                 category with id: {}'.format(ann['category_id'])
             )
         segment_id, color = id_generator.get_id_and_color(ann['category_id'])
-        mask = coco_detection.annToMask(ann)
-        overlaps_map += mask
-        pan_format[mask == 1] = color
+        mask_det = coco_detection.annToMask(ann)
+        overlaps_map += mask_det
+        pan_format[mask_det == 1] = color
         ann.pop('segmentation')
         ann.pop('image_id')
         ann['id'] = segment_id
-        segments_info.append(ann)
+        segments_info_det.append(ann)
     if np.sum(overlaps_map > 1) != 0:
         raise Exception("Segments for image {} overlap each other.".format(img_id))
     # panoptic_record['segments_info'] = segments_info
     # annotations_panoptic.append(panoptic_record)
     img_detection = Image.fromarray(pan_format)
-    return segments_info, img_detection
+    return segments_info_det, img_detection
