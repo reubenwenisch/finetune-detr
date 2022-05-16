@@ -566,7 +566,8 @@ def create_panoptic_annotation_format(image_id, file_name, result, coco_detectio
     # if segments_info != []:
     annotation["segments_info"] = segments_info
     segments_info_det, img_detection = convert_detection_to_panoptic_coco_format_single_core(coco_detection, image_id)
-    annotation["segments_info"].append(segments_info_det)
+    for seg in segments_info_det:
+        annotation["segments_info"].append(seg)
     return annotation, img_detection
 
 # coco_detection = COCO(input_json_file)

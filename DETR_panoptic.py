@@ -15,7 +15,7 @@ import panopticapi
 from panopticapi.utils import id2rgb, rgb2id
 # device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 device = 'cpu'
-mode = 'val'
+mode = 'train'
 
 # These are the COCO classes
 CLASSES = [
