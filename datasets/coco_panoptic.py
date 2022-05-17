@@ -11,7 +11,6 @@ from util.box_ops import masks_to_boxes
 
 from .coco import make_coco_transforms
 
-
 class CocoPanoptic:
     def __init__(self, img_folder, ann_folder, ann_file, transforms=None, return_masks=True):
         with open(ann_file, 'r') as f:
@@ -20,10 +19,11 @@ class CocoPanoptic:
         # sort 'images' field so that they are aligned with 'annotations'
         # i.e., in alphabetical order
         self.coco['images'] = sorted(self.coco['images'], key=lambda x: x['id'])
+        self.coco['annotations'] = sorted(self.coco['annotations'], key=lambda x: x['image_id'])
         # sanity check
         if "annotations" in self.coco:
             for img, ann in zip(self.coco['images'], self.coco['annotations']):
-                assert img['file_name'][:-4] == ann['file_name'][:-4]
+                assert img['file_name'][:-4] == ann['file_name'][:-4], f"img file name is {img['file_name'][:-4]} and ann file name is {ann['file_name'][:-4]}."
 
         self.img_folder = img_folder
         self.ann_folder = ann_folder
@@ -35,7 +35,7 @@ class CocoPanoptic:
         ann_info = self.coco['annotations'][idx] if "annotations" in self.coco else self.coco['images'][idx]
         img_path = Path(self.img_folder) / ann_info['file_name'].replace('.png', '.jpg')
         ann_path = Path(self.ann_folder) / ann_info['file_name']
-        # print("idx", idx)
+
         img = Image.open(img_path).convert('RGB')
         w, h = img.size
         if "segments_info" in ann_info:
@@ -60,10 +60,6 @@ class CocoPanoptic:
         target['orig_size'] = torch.as_tensor([int(h), int(w)])
         if "segments_info" in ann_info:
             for name in ['iscrowd', 'area']:
-                for ann in ann_info['segments_info']:
-                    if 'iscrowd' not in ann:
-                        print("ann_info", ann_info)
-                        ann['iscrowd'] = torch.tensor([0])
                 target[name] = torch.tensor([ann[name] for ann in ann_info['segments_info']])
 
         if self.transforms is not None:

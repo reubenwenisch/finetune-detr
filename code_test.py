@@ -7,6 +7,7 @@ cmd = 'python main.py --coco_path "/home/wenisch/Atom360/AI/Learning/data/datase
         --lr 1e-5 \
         --batch_size 2 \
         --output_dir "annotations/pan/output" \
+        --num_queries 10 \
         --epochs 10'
 print(os.getcwd())
 os.system(cmd)
