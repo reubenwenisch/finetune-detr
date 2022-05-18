@@ -1,8 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 """
-Oral dataset which returns image_id for evaluation.
+COCO dataset which returns image_id for evaluation.
 
-Mostly copy-paste from https://github.com/pytorch/vision/blob/13b35ff/references/detection/Oral_utils.py
+Mostly copy-paste from https://github.com/pytorch/vision/blob/13b35ff/references/detection/coco_utils.py
 """
 from pathlib import Path
 
@@ -15,7 +15,8 @@ import datasets.transforms as T
 import cv2
 import numpy as np
 
-dialate = True
+dialate = False
+
 
 class CocoDetection(torchvision.datasets.CocoDetection):
     def __init__(self, img_folder, ann_file, transforms, return_masks):
@@ -32,8 +33,6 @@ class CocoDetection(torchvision.datasets.CocoDetection):
             img, target = self._transforms(img, target)
         return img, target
 
-# Todo https://blogs.mathworks.com/steve/2007/06/28/finding-pixels-adjacent-to-a-mask/
-# https://www.projectpro.io/recipes/what-is-dilation-of-image-dilate-image-opencv
 
 def convert_coco_poly_to_mask(segmentations, height, width):
     masks = []
@@ -47,8 +46,9 @@ def convert_coco_poly_to_mask(segmentations, height, width):
         if dialate == True:
             kernel = np.ones((7,7),np.uint8) 
             dilated_image = cv2.dilate(mask,kernel,iterations = 3) 
-        masks.append(dilated_image)
-        # masks.append(mask)
+            masks.append(dilated_image)
+        else:
+            masks.append(mask)
     if masks:
         masks = torch.stack(masks, dim=0)
     else:
@@ -91,10 +91,8 @@ class ConvertCocoPolysToMask(object):
             num_keypoints = keypoints.shape[0]
             if num_keypoints:
                 keypoints = keypoints.view(num_keypoints, -1, 3)
-        # print("classes", classes)
-        # print("boxes", boxes)
+
         keep = (boxes[:, 3] > boxes[:, 1]) & (boxes[:, 2] > boxes[:, 0])
-        # print("keep", keep)
         boxes = boxes[keep]
         classes = classes[keep]
         if self.return_masks:
@@ -153,6 +151,7 @@ def make_coco_transforms(image_set):
         ])
 
     raise ValueError(f'unknown {image_set}')
+
 
 def build(image_set, args):
     root = Path(args.coco_path)

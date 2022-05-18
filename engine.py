@@ -53,8 +53,8 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
         if max_norm > 0:
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
         optimizer.step()
-        # if loss_value > 1000:
-        #     print("####Loss", loss_dict_reduced)
+        if loss_value > 1000:
+            print("####Targets", targets)
             # print("outputs", outputs)
         metric_logger.update(loss=loss_value, **loss_dict_reduced_scaled, **loss_dict_reduced_unscaled)
         metric_logger.update(class_error=loss_dict_reduced['class_error'])
