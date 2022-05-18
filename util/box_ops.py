@@ -61,7 +61,7 @@ def generalized_box_iou(boxes1, boxes2):
     return iou - (area - union) / area
 
 
-def masks_to_boxes(masks):
+def masks_to_boxes2(masks):
     """Compute the bounding boxes around the provided masks
 
     The masks should be in format [N, H, W] where N is the number of masks, (H, W) are the spatial dimensions.
@@ -87,3 +87,30 @@ def masks_to_boxes(masks):
 
     # return torch.stack([x_min, y_min, x_max, y_max], 1)
     return torch.stack([torch.minimum(x_min, x_max), torch.minimum(y_min, y_max), torch.maximum(x_min, x_max), torch.maximum(y_min, y_max)], 1)
+
+from pycocotools import mask
+import cv2
+import numpy as np
+def masks_to_boxes(masks):
+    """Compute the bounding boxes around the provided masks
+
+    The masks should be in format [N, H, W] where N is the number of masks, (H, W) are the spatial dimensions.
+
+    Returns a [N, 4] tensors, with the boxes in xyxy format
+    """
+    if masks.numel() == 0:
+        return torch.zeros((0, 4), device=masks.device)
+
+    h, w = masks.shape[-2:]
+
+    y = torch.arange(0, h, dtype=torch.float)
+    x = torch.arange(0, w, dtype=torch.float)
+    y, x = torch.meshgrid(y, x)
+
+    ground_truth_binary_mask= cv2.copyMakeBorder(masks,1,1,1,1,cv2.BORDER_CONSTANT,value=black)
+    fortran_ground_truth_binary_mask = np.asfortranarray(ground_truth_binary_mask)
+    encoded_ground_truth = mask.encode(fortran_ground_truth_binary_mask)
+    ground_truth_bounding_box = mask.toBbox(encoded_ground_truth)
+    bboxes = ground_truth_bounding_box.tolist()
+    # return torch.stack([x_min, y_min, x_max, y_max], 1)
+    return torch.stack(bboxes, 1)
