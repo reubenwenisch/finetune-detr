@@ -95,7 +95,7 @@ from torchvision.ops import masks_to_boxes
 
 black = [0,0,0]
 
-def masks_to_boxes(masks):
+def masks_to_boxes4(masks):
     """Compute the bounding boxes around the provided masks
 
     The masks should be in format [N, H, W] where N is the number of masks, (H, W) are the spatial dimensions.
